@@ -6,18 +6,13 @@ import {articleStore, commentStore } from '../stores'
 import ArticleComponent from './../components/Article'
 import { addComment } from '../AC/comments'
 
-export default class Article extends Component {
+class Article extends Component {
     constructor(props) {
         super(props)
         this.state = this.getState()
     }
 
-    getState() {
-        return {
-            article: articleStore.getById(this.props.article.id),
-            comments : commentStore.getAll()
-        }
-    }
+
     componentDidMount() {
         this.state = this.getState()
         articleStore.addChangeListener(this.changeArticles)
@@ -31,7 +26,15 @@ export default class Article extends Component {
     changeArticles = () => {
         this.setState(this.getState())
     }
+    getState() {
+        return {
+            article: articleStore.getById(this.props.article.id),
+            comments : commentStore.getAll()
+        }
+    }
     render(){
         return <ArticleComponent {...this.props} comments={this.state.comments} addComment={addComment}></ArticleComponent>
     }
 }
+
+export default  Article
