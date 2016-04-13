@@ -1,40 +1,36 @@
-/**
- * Created by svetlana on 07.04.16.
- */
 import React, { Component, PropTypes } from 'react'
-import {articleStore, commentStore } from '../stores'
-import ArticleComponent from './../components/Article'
-import { addComment } from '../AC/comments'
+import connectToStore from '../HOC/connectToStore'
+import { Link } from 'react-router'
+import { loadArticleById, deleteArticle } from '../AC/articles'
+import Article from '../components/Article'
 
-class Article extends Component {
-    constructor(props) {
-        super(props)
-        this.state = this.getState()
-    }
+class ArticleContainer extends Component {
+    static propTypes = {
+        id: PropTypes.string.isRequired,
+        article: PropTypes.object
+    };
 
+    render() {
+        const { article } = this.props
+        if (!article || article.loading) return <h3>Loading...</h3>
 
-    componentDidMount() {
-        this.state = this.getState()
-        articleStore.addChangeListener(this.changeArticles)
-        commentStore.addChangeListener(this.changeArticles)
-    }
-
-    componentWillUnmount() {
-        articleStore.removeChangeListener(this.changeArticles)
-        commentStore.removeChangeListener(this.changeArticles)
-    }
-    changeArticles = () => {
-        this.setState(this.getState())
-    }
-    getState() {
-        return {
-            article: articleStore.getById(this.props.article.id),
-            comments : commentStore.getAll()
-        }
-    }
-    render(){
-        return <ArticleComponent {...this.props} comments={this.state.comments} addComment={addComment}></ArticleComponent>
+        return <Article
+            article = {article}
+            ignoreLoading = {true}
+            deleteArticle = {deleteArticle}
+            isOpen = {true}
+        />
     }
 }
 
-export default  Article
+function getState(stores, props) {
+    const { id } = props
+    const article = stores.articles.getById(id)
+    if (!article || !article.text) loadArticleById({ id })
+
+    return {
+        article: article
+    }
+}
+
+export default connectToStore(['articles'], getState)(ArticleContainer)

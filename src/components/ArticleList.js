@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import Article from '../containers/Article'
+import Article from './Article'
 import singleOpen from '../HOC/singleOpen'
 
 class AricleList extends Component {
