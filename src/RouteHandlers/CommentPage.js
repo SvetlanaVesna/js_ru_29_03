@@ -9,8 +9,8 @@ class CommentPage extends Component {
 
     render() {
         const { page } = this.props.params
-        console.log(page)
-        var nxtPge = page + 1;
+
+        var nxtPge = parseInt(page) + 1;
         return (
             <div>
                 <h3>Comments page {page}</h3>
